@@ -16,19 +16,38 @@ A Steam possui mais de 50.000 jogos ativos. Usuários ficam paralisados pela abu
 
 ```
 steam-recommender/
-├── app.py                      # Interface Streamlit (local + Streamlit Cloud)
+├── app.py
+│   └── Interface web e experiência do usuário (Streamlit)
+│
 ├── src/
-│   ├── preprocessing.py        # Limpeza e filtragem de qualidade
-│   ├── features.py             # MultiLabelBinarizer + matriz esparsa
-│   ├── recommender.py          # Motor de recomendação (Cosine Similarity)
-│   ├── steam_api.py            # Integração com a Steam Web API (tempo real)
-│   └── evaluation.py           # ILD, Genre Coherence, Catalog Coverage
+│   ├── preprocessing.py
+│   │   └── Limpeza, validação e preparação dos dados
+│   │
+│   ├── features.py
+│   │   └── Engenharia de features e construção da matriz esparsa
+│   │
+│   ├── recommender.py
+│   │   └── Sistema de recomendação baseado em Similaridade do Cosseno
+│   │
+│   ├── steam_api.py
+│   │   └── Integração com a Steam API para dados em tempo real
+│   │
+│   └── evaluation.py
+│       └── Métricas de avaliação das recomendações
+│
 ├── data/
-│   └── games_slim.csv          # Dataset reduzido (13 colunas, 45 MB)
+│   └── games_slim.csv
+│       └── Dataset otimizado (~56 mil jogos)
+│
 ├── .streamlit/
-│   └── config.toml             # Tema dark + configurações do servidor
+│   └── config.toml
+│       └── Configurações da aplicação
+│
 ├── requirements.txt
+│   └── Dependências do projeto
+│
 └── README.md
+    └── Documentação técnica
 ```
 
 ---
