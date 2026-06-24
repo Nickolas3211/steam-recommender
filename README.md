@@ -81,15 +81,6 @@ Acesse em `http://localhost:8501`
 
 ---
 
-## ☁️ Deploy — Streamlit Cloud (gratuito)
-
-1. Acesse [share.streamlit.io](https://share.streamlit.io) e conecte sua conta GitHub
-2. Clique em **New app**
-3. Selecione: repositório `steam-recommender`, branch `main`, arquivo `app.py`
-4. Clique em **Deploy** — em ~2 minutos o app estará no ar com URL pública
-
----
-
 ## 📊 Dataset
 
 [Steam Games Dataset — Kaggle](https://www.kaggle.com/datasets/fronkongames/steam-games-dataset)
