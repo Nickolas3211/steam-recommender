@@ -2,7 +2,7 @@
 
 **[🇧🇷 Português](#-português) | [🇺🇸 English](#-english)**
 
-[![Streamlit App]([https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://nickolas3211-steam-recommender.streamlit.app](https://steam-recommender-keyvxhbvtycukkeyufzezy.streamlit.app))
+App: https://steam-recommender-keyvxhbvtycukkeyufzezy.streamlit.app
 
 ---
 
