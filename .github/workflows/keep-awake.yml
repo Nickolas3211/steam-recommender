@@ -1,0 +1,29 @@
+name: Keep Streamlit App Awake
+
+# Roda automaticamente a cada 6 horas (bem dentro da janela de 12h de
+# inatividade que a Streamlit Community Cloud usa para hibernar o app),
+# e também pode ser disparado manualmente pela aba "Actions" do GitHub.
+on:
+  schedule:
+    - cron: "0 */6 * * *"  # a cada 6 horas, no horário UTC
+  workflow_dispatch: {}
+
+jobs:
+  keep-awake:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do repositório
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Instalar dependências
+        run: |
+          pip install -r requirements-keepalive.txt
+          playwright install --with-deps chromium
+
+      - name: Visitar o app e reativar se necessário
+        run: python keep_awake.py
