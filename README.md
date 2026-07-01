@@ -1,18 +1,30 @@
 # 🎮 Steam Game Recommender — Content-Based Filtering
 
+**[🇧🇷 Português](#-português) | [🇺🇸 English](#-english)**
+
 [![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://nickolas3211-steam-recommender.streamlit.app)
+
+---
+
+## 🇧🇷 Português
 
 Sistema de recomendação de jogos da Steam baseado em conteúdo (**Content-Based Filtering**), usando Similaridade do Cosseno sobre Tags, Gêneros e Categorias — com dados ao vivo de preço e avaliações via Steam API.
 
----
+### Índice
 
-## 🧠 Problema de Negócio
+- [Problema de Negócio](#-problema-de-negócio)
+- [Arquitetura](#️-arquitetura)
+- [Decisões Técnicas](#️-decisões-técnicas)
+- [Pipeline](#-pipeline)
+- [Rodar Localmente](#-rodar-localmente)
+- [Dataset](#-dataset)
+- [Stack](#️-stack)
+
+### 🧠 Problema de Negócio
 
 A Steam possui mais de 50.000 jogos ativos. Usuários ficam paralisados pela abundância de escolhas — o chamado *paradoxo da escolha*. Um sistema de recomendação baseado em conteúdo resolve isso: dado um jogo que você gostou, encontra os mais similares em gênero, mecânicas e perfil de avaliação, sem precisar do histórico de outros usuários.
 
----
-
-## 🏗️ Arquitetura
+### 🏗️ Arquitetura
 
 ```
 steam-recommender/
@@ -50,9 +62,7 @@ steam-recommender/
     └── Documentação técnica
 ```
 
----
-
-## ⚙️ Decisões Técnicas
+### ⚙️ Decisões Técnicas
 
 | Decisão | Justificativa |
 |---|---|
@@ -64,9 +74,7 @@ steam-recommender/
 | CSV slim (45 MB) | CSV original tem 383 MB — extraídas apenas as 13 colunas necessárias para caber no GitHub |
 | `@st.cache_resource` | Modelo carregado uma única vez por sessão, sem reprocessar a cada interação |
 
----
-
-## 📐 Pipeline
+### 📐 Pipeline
 
 ```
 games_slim.csv (45 MB)
@@ -80,9 +88,7 @@ Top-N jogos mais similares
        ↓  app.py — interface Streamlit com capas, scores e links para a Steam
 ```
 
----
-
-## 🚀 Rodar Localmente
+### 🚀 Rodar Localmente
 
 ```bash
 # 1. Clonar o repositório
@@ -98,9 +104,7 @@ streamlit run app.py
 
 Acesse em `http://localhost:8501`
 
----
-
-## 📊 Dataset
+### 📊 Dataset
 
 [Steam Games Dataset — Kaggle](https://www.kaggle.com/datasets/fronkongames/steam-games-dataset)
 
@@ -110,28 +114,124 @@ Acesse em `http://localhost:8501`
 | Colunas | 39 | 13 | 13 + 2 derivadas |
 | Tamanho | 383 MB | 45 MB | — |
 
----
-
-## 🛠️ Stack
+### 🛠️ Stack
 
 `Python` · `Pandas` · `Scikit-learn` · `Scipy` · `Streamlit` · `Requests`
 
 ---
 
+## 🇺🇸 English
+
+A Steam game recommendation system based on **Content-Based Filtering**, using Cosine Similarity over Tags, Genres and Categories — with live price and review data via the Steam Web API.
+
+### Table of Contents
+
+- [Business Problem](#-business-problem)
+- [Architecture](#️-architecture)
+- [Technical Decisions](#️-technical-decisions)
+- [Pipeline](#-pipeline-1)
+- [Run Locally](#-run-locally)
+- [Dataset](#-dataset-1)
+- [Stack](#️-stack-1)
+
+### 🧠 Business Problem
+
+Steam has over 50,000 active games. Users get paralyzed by the sheer abundance of choice — the so-called *paradox of choice*. A content-based recommendation system solves this: given a game the user liked, it finds the most similar ones in genre, mechanics, and review profile, with no need for other users' interaction history.
+
+### 🏗️ Architecture
+
+```
+steam-recommender/
+├── app.py
+│   └── Web interface and user experience (Streamlit)
+│
+├── src/
+│   ├── preprocessing.py
+│   │   └── Data cleaning, validation and preparation
+│   │
+│   ├── features.py
+│   │   └── Feature engineering and sparse matrix construction
+│   │
+│   ├── recommender.py
+│   │   └── Recommendation engine based on Cosine Similarity
+│   │
+│   ├── steam_api.py
+│   │   └── Integration with the Steam API for real-time data
+│   │
+│   └── evaluation.py
+│       └── Recommendation evaluation metrics
+│
+├── data/
+│   └── games_slim.csv
+│       └── Optimized dataset (~56k games)
+│
+├── .streamlit/
+│   └── config.toml
+│       └── App configuration
+│
+├── requirements.txt
+│   └── Project dependencies
+│
+└── README.md
+    └── Technical documentation
+```
+
+### ⚙️ Technical Decisions
+
+| Decision | Rationale |
+|---|---|
+| `MultiLabelBinarizer` | Tags are multi-label — `get_dummies` would treat `"Action,RPG"` as a single value instead of two separate columns |
+| Cosine Similarity | Ignores vector magnitude, avoiding bias between indie games (few tags) and AAA titles (many tags) |
+| `scipy.sparse` matrix | ~97% of values are zero — cuts memory usage by ~98% |
+| Feature weighting | Tags (×2.0) > Genres (×1.5) > Categories (×1.0) > Numerical (×0.5) |
+| On-demand Steam API | Fetches price and reviews in real time only for the queried game, respecting the rate limit |
+| Slim CSV (45 MB) | Original CSV is 383 MB — only the 13 required columns were extracted to fit within GitHub's limits |
+| `@st.cache_resource` | Model is loaded once per session, avoiding reprocessing on every interaction |
+
+### 📐 Pipeline
+
+```
+games_slim.csv (45 MB)
+       ↓  preprocessing.py — quality filtering (tags + min. 10 reviews)
+Clean DataFrame (~56,661 games)
+       ↓  features.py — MultiLabelBinarizer + MinMaxScaler + weighting
+Sparse matrix (56,661 × 541 features)
+       ↓  recommender.py — on-demand Cosine Similarity
+Top-N most similar games
+       ↓  steam_api.py — live price and reviews (queried game only)
+       ↓  app.py — Streamlit UI with covers, scores and Steam links
+```
+
+### 🚀 Run Locally
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/Nickolas3211/steam-recommender.git
+cd steam-recommender
+
+# 2. Install dependencies
+pip install -r requirements.txt
+
+# 3. Run
+streamlit run app.py
+```
+
+Access at `http://localhost:8501`
+
+### 📊 Dataset
+
+[Steam Games Dataset — Kaggle](https://www.kaggle.com/datasets/fronkongames/steam-games-dataset)
+
+| | Original | Slim (this repo) | After filtering |
+|---|---|---|---|
+| Games | 125,855 | 125,855 | 56,661 |
+| Columns | 39 | 13 | 13 + 2 derived |
+| Size | 383 MB | 45 MB | — |
+
+### 🛠️ Stack
+
+`Python` · `Pandas` · `Scikit-learn` · `Scipy` · `Streamlit` · `Requests`
+
 ---
-
-# 🎮 Steam Game Recommender — Content-Based Filtering *(English)*
-
-A Steam game recommendation system using **Content-Based Filtering** with Cosine Similarity over Tags, Genres and Categories — plus live price and review data via the Steam Web API.
-
-**Key design decisions:**
-- `MultiLabelBinarizer` for multi-label tag encoding (not `get_dummies`)
-- Sparse matrix (~97% sparsity, ~98% memory savings vs dense)
-- On-demand cosine similarity — no pre-computed N×N matrix stored in memory
-- Feature weighting: Tags (2×) > Genres (1.5×) > Categories (1×) > Numeric (0.5×)
-- Steam API called on-demand for the queried game only (respects rate limits)
-- Slim CSV (45 MB) extracted from 383 MB original to fit GitHub without Git LFS
-
-**Run locally:** `pip install -r requirements.txt && streamlit run app.py`
 
 *Portfolio project — Data Science · Recommendation Systems*
